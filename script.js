@@ -1,7 +1,6 @@
-const gameBoard = gameBoardFactory([[null,null,null], 
-                                    [null,null,null],
-                                    [null,null,null]]);
-
-const gameBoardFactory = (board) => {
+const gameBoard = (() => {
+    let board = [[null,null,null], 
+                [null,null,null],
+                [null,null,null]];
     return {board};
-}
+})();
