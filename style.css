@@ -1,0 +1,7 @@
+.row {
+    display: flex;
+}
+
+.tile {
+padding :50px;
+}
