@@ -1,22 +1,32 @@
-const Player = (name, sign) => { 
-    let isItMyTurn = false;
-    return {name, sign, isItMyTurn}
+const Player = (name, mark) => { 
+    let myTurn = false;
+
+    const changeTurn = (value) => {
+        if(value) myTurn = value;  
+        else myTurn = !myTurn; 
+    }
+
+    const isItMyTurn = () => {
+        return myTurn
+    }
+
+    return {name, mark, changeTurn, isItMyTurn}
 }
 
-const playerOne = Player('Player 1', 'X');
-const playerTwo = Player('Player 2', 'O');
+const playerOne = Player('Player 1', 'O');
+const playerTwo = Player('Player 2', 'X');
 
 const gameBoard = (() => {
     let board = [];
     let boardDOM = [];
 
     const changeMark = (x,y,symbol) => {
-        board[x,y] = symbol
+        gameBoard.board[y][x] = symbol
     }
 
     const _getBoardDOM = (() => {
         const rows = [...document.querySelectorAll('.game-board .row')];
-        for(i = 1; i <= rows.length; i++) {
+        for(i = 0; i < rows.length; i++) {
             const tiles = document.querySelectorAll(`.game-board .row[data-index="${i}"] .tile`);
             boardDOM.push([...tiles]);
         } 
@@ -32,13 +42,23 @@ const game = (() => {
                           [null,null,null],
                           [null,null,null]];
         displayController.renderBoard();
-        playerOne.isItMyTurn = true;
+        playerOne.changeTurn(true);
+        playerTwo.changeTurn(false);
         started = true;
     }
 
     const changeMarkOnClick = (tile) => {
-
+        const xIndex = tile.dataset.index; 
+        const yIndex = tile.parentElement.dataset.index;
+        const symbol = playerOne.isItMyTurn() ? 1 : 2;
+        if(gameBoard.board[yIndex][xIndex] === null) {
+            gameBoard.changeMark(xIndex, yIndex, symbol);
+            displayController.renderBoard();
+            playerOne.changeTurn();
+            playerTwo.changeTurn();
+        }
     }
+
     return {startGame, changeMarkOnClick};
 })();
 
@@ -59,10 +79,10 @@ const displayController = (() => {
                 tile.textContent = '';
                 break;
             case 1:
-                tile.textContent = playerOne.sign;
+                tile.textContent = playerOne.mark;
                 break;
             case 2:
-                tile.textContent = playerTwo.sign;
+                tile.textContent = playerTwo.mark;
                 break;
             default:
                 break;
@@ -71,4 +91,7 @@ const displayController = (() => {
 
     return {renderBoard};
 })();
+const tiles = document.querySelectorAll(`.tile`);
+tiles.forEach(tile => tile.addEventListener('click', e => game.changeMarkOnClick(e.target)));
+
 game.startGame();
