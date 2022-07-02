@@ -36,7 +36,6 @@ const gameBoard = (() => {
 })();
 
 const game = (() => {
-    let started = false;
     const startGame = () => {
         gameBoard.board = [[null,null,null], 
                           [null,null,null],
@@ -44,22 +43,25 @@ const game = (() => {
         displayController.renderBoard();
         playerOne.changeTurn(true);
         playerTwo.changeTurn(false);
-        started = true;
     }
 
-    const changeMarkOnClick = (tile) => {
+    const tileOnClick = (tile) => {
         const xIndex = tile.dataset.index; 
         const yIndex = tile.parentElement.dataset.index;
         const symbol = playerOne.isItMyTurn() ? 1 : 2;
-        if(gameBoard.board[yIndex][xIndex] === null) {
-            gameBoard.changeMark(xIndex, yIndex, symbol);
+        _playRound(xIndex, yIndex, symbol);
+    }
+
+    const _playRound = (x, y, symbol) => {
+        if(gameBoard.board[y][x] === null) {
+            gameBoard.changeMark(x, y, symbol);
             displayController.renderBoard();
             playerOne.changeTurn();
             playerTwo.changeTurn();
         }
     }
 
-    return {startGame, changeMarkOnClick};
+    return {startGame, tileOnClick};
 })();
 
 const displayController = (() => {
@@ -92,6 +94,6 @@ const displayController = (() => {
     return {renderBoard};
 })();
 const tiles = document.querySelectorAll(`.tile`);
-tiles.forEach(tile => tile.addEventListener('click', e => game.changeMarkOnClick(e.target)));
+tiles.forEach(tile => tile.addEventListener('click', e => game.tileOnClick(e.target)));
 
 game.startGame();
