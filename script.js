@@ -1,34 +1,53 @@
 const Player = (name, sign) => { 
-    return {name, sign}
+    let isItMyTurn = false;
+    return {name, sign, isItMyTurn}
 }
 
 const playerOne = Player('Player 1', 'X');
 const playerTwo = Player('Player 2', 'O');
 
 const gameBoard = (() => {
-    let board = [[null,null,null], 
-                 [null,null,null],
-                 [null,null,null]];
+    let board = [];
+    let boardDOM = [];
 
     const changeMark = (x,y,symbol) => {
         board[x,y] = symbol
     }
-    return {board, changeMark};
+
+    const _getBoardDOM = (() => {
+        const rows = [...document.querySelectorAll('.game-board .row')];
+        for(i = 1; i <= rows.length; i++) {
+            const tiles = document.querySelectorAll(`.game-board .row[data-index="${i}"] .tile`);
+            boardDOM.push([...tiles]);
+        } 
+    })();
+
+    return {board, boardDOM, changeMark};
 })();
 
 const game = (() => {
-    return {};
+    let started = false;
+    const startGame = () => {
+        gameBoard.board = [[null,null,null], 
+                          [null,null,null],
+                          [null,null,null]];
+        displayController.renderBoard();
+        playerOne.isItMyTurn = true;
+        started = true;
+    }
+
+    const changeMarkOnClick = (tile) => {
+
+    }
+    return {startGame, changeMarkOnClick};
 })();
 
 const displayController = (() => {
-    const gameBoardDOM = [];
-
     const renderBoard = () => {
-        _getTilesDOM();
-        for(i = 0; i < gameBoardDOM.length; i++) {
-            const row = gameBoardDOM[i];
+        for(i = 0; i < gameBoard.boardDOM.length; i++) {
+            const row = gameBoard.boardDOM[i];
             for(j = 0; j < row.length; j++) {
-                const tile = gameBoardDOM[i][j];
+                const tile = gameBoard.boardDOM[i][j];
                 _renderTile(tile, i, j)
             }
         }
@@ -50,15 +69,6 @@ const displayController = (() => {
         }
     }
 
-    const _getTilesDOM = () => {
-        const rows = [...document.querySelectorAll('.game-board .row')];
-        for(i = 1; i <= rows.length; i++) {
-            const tiles = document.querySelectorAll(`.game-board .row[data-index="${i}"] .tile`);
-            gameBoardDOM.push([...tiles]);
-        } 
-    } 
-
     return {renderBoard};
 })();
-
-displayController.renderBoard();
+game.startGame();
