@@ -9,7 +9,11 @@ const gameBoard = (() => {
     let board = [[null,null,null], 
                  [null,null,null],
                  [null,null,null]];
-    return {board};
+
+    const changeMark = (x,y,symbol) => {
+        board[x,y] = symbol
+    }
+    return {board, changeMark};
 })();
 
 const game = (() => {
@@ -19,18 +23,18 @@ const game = (() => {
 const displayController = (() => {
     const gameBoardDOM = [];
 
-    const render = () => {
-        getTilesDOM();
+    const renderBoard = () => {
+        _getTilesDOM();
         for(i = 0; i < gameBoardDOM.length; i++) {
             const row = gameBoardDOM[i];
             for(j = 0; j < row.length; j++) {
                 const tile = gameBoardDOM[i][j];
-                renderTile(tile, i, j)
+                _renderTile(tile, i, j)
             }
         }
     }
 
-    const renderTile = (tile, i, j) => {
+    const _renderTile = (tile, i, j) => {
         switch (gameBoard.board[i][j]) {
             case null:
                 tile.textContent = '';
@@ -46,7 +50,7 @@ const displayController = (() => {
         }
     }
 
-    const getTilesDOM = () => {
+    const _getTilesDOM = () => {
         const rows = [...document.querySelectorAll('.game-board .row')];
         for(i = 1; i <= rows.length; i++) {
             const tiles = document.querySelectorAll(`.game-board .row[data-index="${i}"] .tile`);
@@ -54,7 +58,7 @@ const displayController = (() => {
         } 
     } 
 
-    return {render};
+    return {renderBoard};
 })();
 
-displayController.render();
+displayController.renderBoard();
