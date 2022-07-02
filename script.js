@@ -52,6 +52,27 @@ const game = (() => {
         _playRound(xIndex, yIndex, symbol);
     }
 
+    const _checkForWinner = () => {
+        _checkVertically();
+        _checkHorizontally();
+        _checkDiagonally();
+    }
+
+    const _checkVertically = () => {
+    }
+
+    const _checkHorizontally = () => {
+        gameBoard.board.forEach(row => {
+            if(row[0] === row[1] && row[1] === row[2] && row[0] !== null) {
+                console.log(`Winner is player ${row[0]}`);
+            }
+        });
+    }
+
+    const _checkDiagonally = () => {
+
+    }
+
     const _playRound = (x, y, symbol) => {
         if(gameBoard.board[y][x] === null) {
             gameBoard.changeMark(x, y, symbol);
@@ -59,6 +80,7 @@ const game = (() => {
             playerOne.changeTurn();
             playerTwo.changeTurn();
         }
+        _checkForWinner();
     }
 
     return {startGame, tileOnClick};
