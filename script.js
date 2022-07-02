@@ -76,7 +76,12 @@ const game = (() => {
     }
 
     const _checkDiagonally = () => {
-
+        let board = gameBoard.board;
+        if(board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== null) {
+            console.log(`Winner is player ${board[0][0]}`);
+        } else if (board[2][0] === board[1][1] && board[1][1] === board[0][2] && board[2][0] !== null) {
+            console.log(`Winner is player ${board[2][0]}`);
+        }
     }
 
     const _playRound = (x, y, symbol) => {
