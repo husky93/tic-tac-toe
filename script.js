@@ -59,6 +59,12 @@ const game = (() => {
     }
 
     const _checkVertically = () => {
+        for(i = 0; i < 3; i++) {
+            let board = gameBoard.board;
+            if(board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== null) {
+                console.log(`Winner is player ${board[0][i]}`);
+            }
+        }
     }
 
     const _checkHorizontally = () => {
