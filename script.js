@@ -60,11 +60,11 @@ const game = (() => {
     }
 
     const _checkForWinner = () => {
-        const winnerCheck = [_checkVertically(), _checkHorizontally(), _checkDiagonally()];
+        const winnerCheck = [_checkVertically(), _checkHorizontally(), _checkDiagonally(), _checkForTie()];
         const winner = winnerCheck.filter(item => item !== 0);
         if(winner.length !== 0) {
             _stopGame(winner[0]);
-            console.log(winner[0]);
+            console.log(winner);
         }
 
     }
@@ -99,6 +99,14 @@ const game = (() => {
             const winner = board[2][0];
             return winner;
         } else return 0;
+    }
+
+    const _checkForTie = () => {
+        tilesCheck = Array.from(_tiles).filter(tile => tile.textContent === '');
+        if(tilesCheck.length === 0) {
+            return 3;
+        }
+        return 0;
     }
 
     const _playRound = (x, y, symbol) => {
