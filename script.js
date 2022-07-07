@@ -36,6 +36,8 @@ const gameBoard = (() => {
 })();
 
 const game = (() => {
+    const _tiles = document.querySelectorAll(`.tile`);
+
     const startGame = () => {
         gameBoard.board = [[null,null,null], 
                           [null,null,null],
@@ -43,10 +45,11 @@ const game = (() => {
         displayController.renderBoard();
         playerOne.changeTurn(true);
         playerTwo.changeTurn(false);
+        _tiles.forEach(tile => tile.addEventListener('click', e => game.tileOnClick(e.target)));
     }
 
-    const stopGame = () => {
-        
+    const stopGame = (winner) => {
+        _tiles.forEach(tile => tile.removeEventListener('click', e => game.tileOnClick(e.target)));
     }
 
     const tileOnClick = (tile) => {
@@ -139,7 +142,6 @@ const displayController = (() => {
 
     return {renderBoard};
 })();
-const tiles = document.querySelectorAll(`.tile`);
-tiles.forEach(tile => tile.addEventListener('click', e => game.tileOnClick(e.target)));
 
-game.startGame();
+const startButton = document.querySelector('.start-game');
+startButton.addEventListener('click', game.startGame());
