@@ -45,6 +45,10 @@ const game = (() => {
         playerTwo.changeTurn(false);
     }
 
+    const stopGame = () => {
+        
+    }
+
     const tileOnClick = (tile) => {
         const xIndex = tile.dataset.index; 
         const yIndex = tile.parentElement.dataset.index;
@@ -53,35 +57,44 @@ const game = (() => {
     }
 
     const _checkForWinner = () => {
-        _checkVertically();
-        _checkHorizontally();
-        _checkDiagonally();
+        const winnerCheck = [_checkVertically(), _checkHorizontally(), _checkDiagonally()];
+        const winner = winnerCheck.filter(item => item !== 0);
+        if(winner.length !== 0) {
+            stopGame(winner[0]);
+        }
+
     }
 
     const _checkVertically = () => {
         for(i = 0; i < 3; i++) {
             let board = gameBoard.board;
             if(board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== null) {
-                console.log(`Winner is player ${board[0][i]}`);
+                const winner = board[0][i];
+                return winner;
             }
         }
+        return 0;
     }
 
     const _checkHorizontally = () => {
+        let winner = 0;
         gameBoard.board.forEach(row => {
             if(row[0] === row[1] && row[1] === row[2] && row[0] !== null) {
-                console.log(`Winner is player ${row[0]}`);
+                winner = row[0];
             }
         });
+        return winner;
     }
 
     const _checkDiagonally = () => {
         let board = gameBoard.board;
         if(board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== null) {
-            console.log(`Winner is player ${board[0][0]}`);
+            const winner = board[0][0];
+            return winner;
         } else if (board[2][0] === board[1][1] && board[1][1] === board[0][2] && board[2][0] !== null) {
-            console.log(`Winner is player ${board[2][0]}`);
-        }
+            const winner = board[2][0];
+            return winner;
+        } else return 0;
     }
 
     const _playRound = (x, y, symbol) => {
