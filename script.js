@@ -45,16 +45,16 @@ const game = (() => {
         displayController.renderBoard();
         playerOne.changeTurn(true);
         playerTwo.changeTurn(false);
-        _tiles.forEach(tile => tile.addEventListener('click', e => game.tileOnClick(e.target)));
+        _tiles.forEach(tile => tile.addEventListener('click', _tileOnClick));
     }
 
-    const stopGame = (winner) => {
-        _tiles.forEach(tile => tile.removeEventListener('click', e => game.tileOnClick(e.target)));
+    const _stopGame = (winner) => {
+        _tiles.forEach(tile => tile.removeEventListener('click', _tileOnClick));
     }
 
-    const tileOnClick = (tile) => {
-        const xIndex = tile.dataset.index; 
-        const yIndex = tile.parentElement.dataset.index;
+    const _tileOnClick = (e) => {
+        const xIndex = e.target.dataset.index; 
+        const yIndex = e.target.parentElement.dataset.index;
         const symbol = playerOne.isItMyTurn() ? 1 : 2;
         _playRound(xIndex, yIndex, symbol);
     }
@@ -63,7 +63,8 @@ const game = (() => {
         const winnerCheck = [_checkVertically(), _checkHorizontally(), _checkDiagonally()];
         const winner = winnerCheck.filter(item => item !== 0);
         if(winner.length !== 0) {
-            stopGame(winner[0]);
+            _stopGame(winner[0]);
+            console.log(winner[0]);
         }
 
     }
@@ -110,7 +111,7 @@ const game = (() => {
         _checkForWinner();
     }
 
-    return {startGame, tileOnClick};
+    return {startGame};
 })();
 
 const displayController = (() => {
@@ -139,9 +140,8 @@ const displayController = (() => {
                 break;
         }
     }
-
     return {renderBoard};
 })();
 
 const startButton = document.querySelector('.start-game');
-startButton.addEventListener('click', game.startGame());
+startButton.addEventListener('click', game.startGame);
