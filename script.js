@@ -69,8 +69,8 @@ const game = (() => {
         
     }
 
-    const _checkForWinner = () => {
-        const winnerCheck = [_checkVertically(), _checkHorizontally(), _checkDiagonally(), _checkForTie()];
+    const checkForWinner = (board) => {
+        const winnerCheck = [_checkVertically(board), _checkHorizontally(board), _checkDiagonally(board), _checkForTie(board)];
         const winner = winnerCheck.filter(item => item !== 0);
         if(winner.length !== 0) {
             _stopGame(winner[0]);
@@ -78,9 +78,8 @@ const game = (() => {
 
     }
 
-    const _checkVertically = () => {
+    const _checkVertically = (board) => {
         for(let i = 0; i < 3; i++) {
-            let board = gameBoard.board;
             if(board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== null) {
                 const winner = board[0][i];
                 return winner;
@@ -89,8 +88,7 @@ const game = (() => {
         return 0;
     }
 
-    const _checkHorizontally = () => {
-        let board = gameBoard.board;
+    const _checkHorizontally = (board) => {
             for(let i = 0; i < 3; i++) {
                 if (board[i][0] === board[i][1] &&
                     board[i][1] === board[i][2] && board[i][0] !== null)
@@ -102,8 +100,7 @@ const game = (() => {
         return 0;
     }
 
-    const _checkDiagonally = () => {
-        let board = gameBoard.board;
+    const _checkDiagonally = (board) => {
         if(board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== null) {
             const winner = board[0][0];
             return winner;
@@ -128,7 +125,7 @@ const game = (() => {
             playerOne.changeTurn();
             playerTwo.changeTurn();
         }
-        _checkForWinner();
+        checkForWinner(gameBoard.board);
     }
 
     return {startGame, playRound};
