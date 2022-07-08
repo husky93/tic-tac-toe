@@ -90,13 +90,16 @@ const game = (() => {
     }
 
     const _checkHorizontally = () => {
-        let winner = 0;
-        gameBoard.board.forEach(row => {
-            if(row[0] === row[1] && row[1] === row[2] && row[0] !== null) {
-                winner = row[0];
+        let board = gameBoard.board;
+            for(let i = 0; i < 3; i++) {
+                if (board[i][0] === board[i][1] &&
+                    board[i][1] === board[i][2] && board[i][0] !== null)
+                {
+                    const winner = board[i][0];
+                    return winner;
+                }
             }
-        });
-        return winner;
+        return 0;
     }
 
     const _checkDiagonally = () => {
@@ -133,34 +136,15 @@ const game = (() => {
 
 const playerAI = (() => {
     const playRoundAI = () => {
-        let legalMoves = _getLegalMoves();
-        while(true) {
-            xIndex = Math.floor(Math.random() * 3);
-            yIndex = Math.floor(Math.random() * 3);
-
-            if(legalMoves[yIndex][xIndex] !== 0) {
-                const symbol = playerOne.isItMyTurn() ? 1 : 2;
-                game.playRound(xIndex, yIndex, symbol);
-                break;
-            }
-        }
-    }
-
-    const _getLegalMoves = () => {
-        let legalMoves = [[],[],[]];
-        for(let i = 0; i < gameBoard.board.length; i++) {
-            for(let j = 0; j < gameBoard.board[i].length; j++) {
-                if (gameBoard.board[i][j] === null) legalMoves[i][j] = 1;
-                else legalMoves [i][j] = 0;
-            }
-        }
-        return legalMoves;
+        let bestMove = _minimax(gameBoard.board, playerTwo);
+        const symbol = playerOne.isItMyTurn() ? 1 : 2;
+        game.playRound(bestMove.x, bestMove.y, symbol);
     }
 
     const _isMovesLeft = (board) => {
-        for(let i = 0; i < board; i++) {
+        for(let i = 0; i < board.length; i++) {
             for(let j = 0; j < board[i].length; j++) {
-                if(board[i][j] !== null) {
+                if(board[i][j] === null) {
                     return true;
                 }
             }
@@ -182,18 +166,18 @@ const playerAI = (() => {
             }
         }
 
-        // Check for vinner horizontally
-        board.forEach(row => {
-            if(row[0] === row[1] && row[1] === row[2] && row[0] !== null) {
-                const winner = row[0];
-                if(winner === 2) {
+        // Check for winner horizontally
+        for(let i = 0; i < 3; i++) {
+            if (board[i][0] == board[i][1] &&
+                board[i][1] == board[i][2])
+            {
+                if (board[i][0] == 2)
                     return +10;
-                }
-                else if(winner === 1) {
-                    return -10
-                }
+                     
+                else if (board[i][0] == 1)
+                    return -10;
             }
-        });
+        }
 
         //Check for winner diagonally
         if(board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== null) {
@@ -213,56 +197,71 @@ const playerAI = (() => {
                 return -10
             }
         }
-
-        return 0;
     }
 
-    const _minimax = (board, depth, isMax) => {
+    const _minimax = (board, player) => {
         let score = _evaluate(board);
-
         // If max won return score
-        if (score == 10) return score;
+        if (score === 10) 
+            return {score};
 
         // If min won return score
-        if (score == -10) return score;
+        if (score === -10) 
+            return {score};
 
         // No winner tie
-        if (_isMovesLeft(board) == false) return 0;
+        if (_isMovesLeft(board) === false) 
+            return {score: 0};
 
-        if(isMax) {
-            let best = -1000;
+        let moves = [];
 
-            for(let i = 0; i < board.length; i++) {
-                for(let j = 0; j < board[i].length; j++) {
-                    if (board[i][j] === null) {
-                        board[i][j] = 2;
+        for(let i = 0; i < 3; i++) {
+            for(let j = 0; j < 3; j++) {
+                if(board[i][j] === null) {
+                    let move = {};
+                    move.x = j;
+                    move.y = i;
+                    board[i][j] = player.mark === 'O' ? 1 : 2;
 
-                        best = Math.max(best, _minimax(board, depth + 1, !isMax));
-
-                        board[i][j] = null;
+                    if(player.mark === 'X') {
+                        let result = _minimax(board, playerOne);
+                        move.score = result.score;
+                    } else {
+                        let result = _minimax(board, playerTwo);
+                        move.score = result.score;
                     }
+
+                    board[i][j] = null;
+                    moves.push(move);
                 }
             }
-            return best;
         }
-        else {
-            let best = 1000;
-            
-            for(let i = 0; i < board.length; i++) {
-                for(let j = 0; j < board[i].length; j++) {
-                    if (board[i][j] === null) {
-                        board[i][j] = 1;
 
-                        best = Math.min(best, _minimax(board, depth + 1, !isMax));
-
-                        board[i][j] = null;
-                    }
-                }
-            }
-            return best;
-        }
+        return _findBestMove(moves, player);
     }
 
+    const _findBestMove = (moves, player) => {
+        let bestMove;
+
+        if(player.mark === 'X') {
+            let bestScore = -1000;
+            for (let i = 0; i < moves.length; i++) {
+                if (moves[i].score > bestScore) {
+                    bestScore = moves[i].score;
+                    bestMove = i;
+                }
+            }
+        } else {
+            let bestScore = 1000;
+            for (let i = 0; i < moves.length; i++) {
+                if (moves[i].score < bestScore) {
+                    bestScore = moves[i].score;
+                    bestMove = i;
+                }
+            }
+        }
+        return moves[bestMove];
+    }
 
 
     return {playRoundAI}
