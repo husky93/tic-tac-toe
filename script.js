@@ -73,9 +73,9 @@ const game = (() => {
         const winnerCheck = [_checkVertically(board), _checkHorizontally(board), _checkDiagonally(board), _checkForTie(board)];
         const winner = winnerCheck.filter(item => item !== 0);
         if(winner.length !== 0) {
-            _stopGame(winner[0]);
+            return winner[0];
         }
-
+        return false;
     }
 
     const _checkVertically = (board) => {
@@ -125,10 +125,13 @@ const game = (() => {
             playerOne.changeTurn();
             playerTwo.changeTurn();
         }
-        checkForWinner(gameBoard.board);
+        isGameWon = checkForWinner(gameBoard.board);
+        if(isGameWon) {
+            _stopGame(isGameWon);
+        };
     }
 
-    return {startGame, playRound};
+    return {startGame, playRound, checkForWinner};
 })();
 
 const playerAI = (() => {
@@ -149,62 +152,15 @@ const playerAI = (() => {
         return false;
     }
 
-    const _evaluate = (board) => {
-        // Check for winner vertically
-        for(let i = 0; i < 3; i++) {
-            if(board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== null) {
-                const winner = board[0][i];
-                if(winner === 2) {
-                    return +10;
-                }
-                else if(winner === 1) {
-                    return -10
-                }
-            }
-        }
-
-        // Check for winner horizontally
-        for(let i = 0; i < 3; i++) {
-            if (board[i][0] == board[i][1] &&
-                board[i][1] == board[i][2])
-            {
-                if (board[i][0] == 2)
-                    return +10;
-                     
-                else if (board[i][0] == 1)
-                    return -10;
-            }
-        }
-
-        //Check for winner diagonally
-        if(board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== null) {
-            const winner = board[0][0];
-            if(winner === 2) {
-                return +10;
-            }
-            else if(winner === 1) {
-                return -10
-            }
-        } else if (board[2][0] === board[1][1] && board[1][1] === board[0][2] && board[2][0] !== null) {
-            const winner = board[2][0];
-            if(winner === 2) {
-                return +10;
-            }
-            else if(winner === 1) {
-                return -10
-            }
-        }
-    }
-
     const _minimax = (board, player) => {
-        let score = _evaluate(board);
+        const gameWinner = game.checkForWinner(board);
         // If max won return score
-        if (score === 10) 
-            return {score};
+        if (gameWinner === 2) 
+            return {score: 10};
 
         // If min won return score
-        if (score === -10) 
-            return {score};
+        if (gameWinner === 1) 
+            return {score: -10};
 
         // No winner tie
         if (_isMovesLeft(board) === false) 
