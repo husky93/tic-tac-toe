@@ -70,7 +70,7 @@ const game = (() => {
     }
 
     const checkForWinner = (board) => {
-        const winnerCheck = [_checkVertically(board), _checkHorizontally(board), _checkDiagonally(board), _checkForTie(board)];
+        const winnerCheck = [_checkVertically(board), _checkHorizontally(board), _checkDiagonally(board)];
         const winner = winnerCheck.filter(item => item !== 0);
         if(winner.length !== 0) {
             return winner[0];
@@ -115,7 +115,8 @@ const game = (() => {
         if(tilesCheck.length === 0) {
             return 3;
         }
-        return 0;
+        return false;
+
     }
 
     const playRound = (x, y, symbol) => {
@@ -126,9 +127,15 @@ const game = (() => {
             playerTwo.changeTurn();
         }
         isGameWon = checkForWinner(gameBoard.board);
+        isGameTied = _checkForTie();
+
         if(isGameWon) {
             _stopGame(isGameWon);
-        };
+        }
+        if(isGameTied) {
+            _stopGame(isGameTied);
+        }
+
     }
 
     return {startGame, playRound, checkForWinner};
