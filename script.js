@@ -37,6 +37,7 @@ const gameBoard = (() => {
 
 const game = (() => {
     const _tiles = document.querySelectorAll(`.tile`);
+    const _winnerDisplay = document.querySelector('.winner-display');
 
     const startGame = () => {
         gameBoard.board = [[null,null,null], 
@@ -45,11 +46,15 @@ const game = (() => {
         displayController.renderBoard();
         playerOne.changeTurn(true);
         playerTwo.changeTurn(false);
+        displayController.changeText(_winnerDisplay, '');
         _tiles.forEach(tile => tile.addEventListener('click', _tileOnClick));
     }
 
     const _stopGame = (winner) => {
         _tiles.forEach(tile => tile.removeEventListener('click', _tileOnClick));
+        if (winner === 1) displayController.changeText(_winnerDisplay, `The winner is: ${playerOne.mark}`);
+        else if (winner === 2) displayController.changeText(_winnerDisplay, `The winner is: ${playerTwo.mark}`);
+        else displayController.changeText(_winnerDisplay, 'Draw');
     }
 
     const _tileOnClick = (e) => {
@@ -123,6 +128,7 @@ const game = (() => {
 })();
 
 const displayController = (() => {
+
     const renderBoard = () => {
         for(i = 0; i < gameBoard.boardDOM.length; i++) {
             const row = gameBoard.boardDOM[i];
@@ -131,6 +137,10 @@ const displayController = (() => {
                 _renderTile(tile, i, j)
             }
         }
+    }
+
+    const changeText = (element, text) => {
+        element.textContent = text;
     }
 
     const _renderTile = (tile, i, j) => {
@@ -148,7 +158,8 @@ const displayController = (() => {
                 break;
         }
     }
-    return {renderBoard};
+
+    return {renderBoard, changeText};
 })();
 
 const startButton = document.querySelector('.start-game');

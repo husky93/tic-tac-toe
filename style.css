@@ -5,3 +5,7 @@
 .tile {
 padding :50px;
 }
+
+.d-none {
+    display: none;
+}
