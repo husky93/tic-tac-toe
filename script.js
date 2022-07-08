@@ -69,7 +69,6 @@ const game = (() => {
         const winner = winnerCheck.filter(item => item !== 0);
         if(winner.length !== 0) {
             _stopGame(winner[0]);
-            console.log(winner);
         }
 
     }
