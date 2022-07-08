@@ -26,7 +26,7 @@ const gameBoard = (() => {
 
     const _getBoardDOM = (() => {
         const rows = [...document.querySelectorAll('.game-board .row')];
-        for(i = 0; i < rows.length; i++) {
+        for(let i = 0; i < rows.length; i++) {
             const tiles = document.querySelectorAll(`.game-board .row[data-index="${i}"] .tile`);
             boardDOM.push([...tiles]);
         } 
@@ -79,7 +79,7 @@ const game = (() => {
     }
 
     const _checkVertically = () => {
-        for(i = 0; i < 3; i++) {
+        for(let i = 0; i < 3; i++) {
             let board = gameBoard.board;
             if(board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== null) {
                 const winner = board[0][i];
@@ -132,9 +132,6 @@ const game = (() => {
 })();
 
 const playerAI = (() => {
-    const _player = playerTwo;
-
-
     const playRoundAI = () => {
         let legalMoves = _getLegalMoves();
         while(true) {
@@ -151,13 +148,24 @@ const playerAI = (() => {
 
     const _getLegalMoves = () => {
         let legalMoves = [[],[],[]];
-        for(i = 0; i < gameBoard.board.length; i++) {
-            for(j = 0; j < gameBoard.board[i].length; j++) {
+        for(let i = 0; i < gameBoard.board.length; i++) {
+            for(let j = 0; j < gameBoard.board[i].length; j++) {
                 if (gameBoard.board[i][j] === null) legalMoves[i][j] = 1;
                 else legalMoves [i][j] = 0;
             }
         }
         return legalMoves;
+    }
+
+    const _isMovesLeft = () => {
+        for(let i = 0; i < legalMoves.length; i++) {
+            for(let j = 0; j < legalMoves[i].length; j++) {
+                if(legalMoves[i][j] === 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     return {playRoundAI}
