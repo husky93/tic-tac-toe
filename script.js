@@ -157,10 +157,10 @@ const playerAI = (() => {
         return legalMoves;
     }
 
-    const _isMovesLeft = () => {
-        for(let i = 0; i < gameBoard.board; i++) {
-            for(let j = 0; j < gameBoard.board[i].length; j++) {
-                if(gameBoard.board[i][j] !== null) {
+    const _isMovesLeft = (board) => {
+        for(let i = 0; i < board; i++) {
+            for(let j = 0; j < board[i].length; j++) {
+                if(board[i][j] !== null) {
                     return true;
                 }
             }
@@ -168,9 +168,8 @@ const playerAI = (() => {
         return false;
     }
 
-    const _evaluate = () => {
+    const _evaluate = (board) => {
         // Check for winner vertically
-        const board = gameBoard.board;
         for(let i = 0; i < 3; i++) {
             if(board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== null) {
                 const winner = board[0][i];
@@ -216,6 +215,52 @@ const playerAI = (() => {
         }
 
         return 0;
+    }
+
+    const _minimax = (board, depth, isMax) => {
+        let score = _evaluate(board);
+
+        // If max won return score
+        if (score == 10) return score;
+
+        // If min won return score
+        if (score == -10) return score;
+
+        // No winner tie
+        if (_isMovesLeft(board) == false) return 0;
+
+        if(isMax) {
+            let best = -1000;
+
+            for(let i = 0; i < board.length; i++) {
+                for(let j = 0; j < board[i].length; j++) {
+                    if (board[i][j] === null) {
+                        board[i][j] = 2;
+
+                        best = Math.max(best, _minimax(board, depth + 1, !isMax));
+
+                        board[i][j] = null;
+                    }
+                }
+            }
+            return best;
+        }
+        else {
+            let best = 1000;
+            
+            for(let i = 0; i < board.length; i++) {
+                for(let j = 0; j < board[i].length; j++) {
+                    if (board[i][j] === null) {
+                        board[i][j] = 1;
+
+                        best = Math.min(best, _minimax(board, depth + 1, !isMax));
+
+                        board[i][j] = null;
+                    }
+                }
+            }
+            return best;
+        }
     }
 
 
