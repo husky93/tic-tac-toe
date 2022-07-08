@@ -38,11 +38,13 @@ const gameBoard = (() => {
 const game = (() => {
     const _tiles = document.querySelectorAll(`.tile`);
     const _winnerDisplay = document.querySelector('.winner-display');
+    let _gameStopped = true;
 
     const startGame = () => {
         gameBoard.board = [[null,null,null], 
                           [null,null,null],
                           [null,null,null]];
+        _gameStopped = false;
         displayController.renderBoard();
         playerOne.changeTurn(true);
         playerTwo.changeTurn(false);
@@ -55,13 +57,16 @@ const game = (() => {
         if (winner === 1) displayController.changeText(_winnerDisplay, `The winner is: ${playerOne.mark}`);
         else if (winner === 2) displayController.changeText(_winnerDisplay, `The winner is: ${playerTwo.mark}`);
         else displayController.changeText(_winnerDisplay, 'Draw');
+        _gameStopped = true;
     }
 
     const _tileOnClick = (e) => {
         const xIndex = e.target.dataset.index; 
         const yIndex = e.target.parentElement.dataset.index;
         const symbol = playerOne.isItMyTurn() ? 1 : 2;
-        _playRound(xIndex, yIndex, symbol);
+        playRound(xIndex, yIndex, symbol);
+        if (!_gameStopped) playerAI.playRoundAI();
+        
     }
 
     const _checkForWinner = () => {
@@ -113,7 +118,7 @@ const game = (() => {
         return 0;
     }
 
-    const _playRound = (x, y, symbol) => {
+    const playRound = (x, y, symbol) => {
         if(gameBoard.board[y][x] === null) {
             gameBoard.changeMark(x, y, symbol);
             displayController.renderBoard();
@@ -123,7 +128,39 @@ const game = (() => {
         _checkForWinner();
     }
 
-    return {startGame};
+    return {startGame, playRound};
+})();
+
+const playerAI = (() => {
+    const _player = playerTwo;
+
+
+    const playRoundAI = () => {
+        let legalMoves = _getLegalMoves();
+        while(true) {
+            xIndex = Math.floor(Math.random() * 3);
+            yIndex = Math.floor(Math.random() * 3);
+
+            if(legalMoves[yIndex][xIndex] !== 0) {
+                const symbol = playerOne.isItMyTurn() ? 1 : 2;
+                game.playRound(xIndex, yIndex, symbol);
+                break;
+            }
+        }
+    }
+
+    const _getLegalMoves = () => {
+        let legalMoves = [[],[],[]];
+        for(i = 0; i < gameBoard.board.length; i++) {
+            for(j = 0; j < gameBoard.board[i].length; j++) {
+                if (gameBoard.board[i][j] === null) legalMoves[i][j] = 1;
+                else legalMoves [i][j] = 0;
+            }
+        }
+        return legalMoves;
+    }
+
+    return {playRoundAI}
 })();
 
 const displayController = (() => {
