@@ -158,15 +158,67 @@ const playerAI = (() => {
     }
 
     const _isMovesLeft = () => {
-        for(let i = 0; i < legalMoves.length; i++) {
-            for(let j = 0; j < legalMoves[i].length; j++) {
-                if(legalMoves[i][j] === 1) {
+        for(let i = 0; i < gameBoard.board; i++) {
+            for(let j = 0; j < gameBoard.board[i].length; j++) {
+                if(gameBoard.board[i][j] !== null) {
                     return true;
                 }
             }
         }
         return false;
     }
+
+    const _evaluate = () => {
+        // Check for winner vertically
+        const board = gameBoard.board;
+        for(let i = 0; i < 3; i++) {
+            if(board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== null) {
+                const winner = board[0][i];
+                if(winner === 2) {
+                    return +10;
+                }
+                else if(winner === 1) {
+                    return -10
+                }
+            }
+        }
+
+        // Check for vinner horizontally
+        board.forEach(row => {
+            if(row[0] === row[1] && row[1] === row[2] && row[0] !== null) {
+                const winner = row[0];
+                if(winner === 2) {
+                    return +10;
+                }
+                else if(winner === 1) {
+                    return -10
+                }
+            }
+        });
+
+        //Check for winner diagonally
+        if(board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== null) {
+            const winner = board[0][0];
+            if(winner === 2) {
+                return +10;
+            }
+            else if(winner === 1) {
+                return -10
+            }
+        } else if (board[2][0] === board[1][1] && board[1][1] === board[0][2] && board[2][0] !== null) {
+            const winner = board[2][0];
+            if(winner === 2) {
+                return +10;
+            }
+            else if(winner === 1) {
+                return -10
+            }
+        }
+
+        return 0;
+    }
+
+
 
     return {playRoundAI}
 })();
