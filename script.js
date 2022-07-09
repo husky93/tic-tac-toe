@@ -63,7 +63,6 @@ const game = (() => {
         gameBoard.initialize();
         _gameStopped = false;
         _pvpButton.classList.contains('active') ? _PvP = true : _PvP = false;
-        console.log(_PvP);
         displayController.renderBoard();
         playerOne.changeTurn(true);
         playerTwo.changeTurn(false);
