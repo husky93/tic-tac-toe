@@ -17,11 +17,21 @@ const playerOne = Player('Player 1', 'O');
 const playerTwo = Player('Player 2', 'X');
 
 const gameBoard = (() => {
-    let board = [];
+    let _board = [];
     let boardDOM = [];
 
     const changeMark = (x,y,symbol) => {
-        gameBoard.board[y][x] = symbol
+        _board[y][x] = symbol
+    }
+
+    const initialize = () => {
+        _board = [[null,null,null], 
+                        [null,null,null],
+                        [null,null,null]];
+    }
+
+    const getBoard = () => {
+        return _board;
     }
 
     const _getBoardDOM = (() => {
@@ -32,7 +42,7 @@ const gameBoard = (() => {
         } 
     })();
 
-    return {board, boardDOM, changeMark};
+    return {boardDOM, changeMark, initialize, getBoard};
 })();
 
 const game = (() => {
@@ -41,9 +51,7 @@ const game = (() => {
     let _gameStopped = true;
 
     const startGame = () => {
-        gameBoard.board = [[null,null,null], 
-                          [null,null,null],
-                          [null,null,null]];
+        gameBoard.initialize();
         _gameStopped = false;
         displayController.renderBoard();
         playerOne.changeTurn(true);
@@ -120,13 +128,14 @@ const game = (() => {
     }
 
     const playRound = (x, y, symbol) => {
-        if(gameBoard.board[y][x] === null) {
+        let board = gameBoard.getBoard();
+        if(board[y][x] === null) {
             gameBoard.changeMark(x, y, symbol);
             displayController.renderBoard();
             playerOne.changeTurn();
             playerTwo.changeTurn();
         }
-        isGameWon = checkForWinner(gameBoard.board);
+        isGameWon = checkForWinner(board);
         isGameTied = _checkForTie();
 
         if(isGameWon) {
@@ -143,7 +152,8 @@ const game = (() => {
 
 const playerAI = (() => {
     const playRoundAI = () => {
-        let bestMove = _minimax(gameBoard.board, playerTwo);
+        let board = gameBoard.getBoard();
+        let bestMove = _minimax(board, playerTwo);
         const symbol = playerOne.isItMyTurn() ? 1 : 2;
         game.playRound(bestMove.x, bestMove.y, symbol);
     }
@@ -244,7 +254,8 @@ const displayController = (() => {
     }
 
     const _renderTile = (tile, i, j) => {
-        switch (gameBoard.board[i][j]) {
+        let board = gameBoard.getBoard();
+        switch (board[i][j]) {
             case null:
                 tile.textContent = '';
                 break;
