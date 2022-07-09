@@ -11,6 +11,10 @@
     box-sizing: border-box;
 }
 
+.d-none {
+    display: none;
+}
+
 body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
@@ -23,9 +27,10 @@ header {
 }
 
 h1 {
-    font-family: 'Edu SA Beginner', cursive;
+    font-family: 'Eczar', serif;
     font-weight: 700;
     font-size: 48px;
+    text-shadow: 3px 3px var(--primary-color);
 }
 
 main {
@@ -50,6 +55,7 @@ main {
 }
 
 .tile {
+    font-family: 'Eczar', serif;
     display: flex;
     align-items: center;
     justify-content: center;
