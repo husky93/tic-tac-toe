@@ -25,8 +25,8 @@ const gameBoard = (() => {
 
     const initialize = () => {
         _board = [[null,null,null], 
-                        [null,null,null],
-                        [null,null,null]];
+                 [null,null,null],
+                 [null,null,null]];
     }
 
     const getBoard = () => {
@@ -233,8 +233,7 @@ const playerAI = (() => {
         }
         return moves[bestMove];
     }
-
-
+    
     return {playRoundAI}
 })();
 

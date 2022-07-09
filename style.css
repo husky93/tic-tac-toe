@@ -1,3 +1,17 @@
+:root {
+    --font-family: 'Roboto', sans-serif;
+    --bg-color: #fff;
+    --text-color: #000;
+    --primary-color: #454545;
+    --primary-color-hover: #545454;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
 .row {
     display: flex;
 }
@@ -8,4 +22,10 @@ padding :50px;
 
 .d-none {
     display: none;
+}
+
+h1 {
+    font-family: 'Edu SA Beginner', cursive;
+    font-weight: 700;
+    font-size: 48px;
 }
