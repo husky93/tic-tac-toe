@@ -71,6 +71,34 @@ const game = (() => {
         _tiles.forEach(tile => tile.addEventListener('click', _tileOnClick));
     }
 
+    const checkForWinner = (board) => {
+        const winnerCheck = [_checkVertically(board), _checkHorizontally(board), _checkDiagonally(board)];
+        const winner = winnerCheck.filter(item => item !== 0);
+        if(winner.length !== 0) {
+            return winner[0];
+        }
+        return false;
+    }
+
+    const playRound = (x, y, symbol) => {
+        let board = gameBoard.getBoard();
+        if(board[y][x] === null) {
+            gameBoard.changeMark(x, y, symbol);
+            displayController.renderBoard();
+            playerOne.changeTurn();
+            playerTwo.changeTurn();
+        }
+        isGameWon = checkForWinner(board);
+        isGameTied = _checkForTie();
+
+        if(isGameWon) {
+            _stopGame(isGameWon);
+        }
+        if(isGameTied) {
+            _stopGame(isGameTied);
+        }
+    }
+
     const _stopGame = (winner) => {
         _tiles.forEach(tile => tile.removeEventListener('click', _tileOnClick));
         if (winner === 1) displayController.changeText(_winnerDisplay, `The winner is: ${playerOne.mark}`);
@@ -86,15 +114,6 @@ const game = (() => {
         playRound(xIndex, yIndex, symbol);
         if (!_gameStopped && !_PvP) playerAI.playRoundAI();
         
-    }
-
-    const checkForWinner = (board) => {
-        const winnerCheck = [_checkVertically(board), _checkHorizontally(board), _checkDiagonally(board)];
-        const winner = winnerCheck.filter(item => item !== 0);
-        if(winner.length !== 0) {
-            return winner[0];
-        }
-        return false;
     }
 
     const _checkVertically = (board) => {
@@ -136,25 +155,6 @@ const game = (() => {
         }
         return false;
 
-    }
-
-    const playRound = (x, y, symbol) => {
-        let board = gameBoard.getBoard();
-        if(board[y][x] === null) {
-            gameBoard.changeMark(x, y, symbol);
-            displayController.renderBoard();
-            playerOne.changeTurn();
-            playerTwo.changeTurn();
-        }
-        isGameWon = checkForWinner(board);
-        isGameTied = _checkForTie();
-
-        if(isGameWon) {
-            _stopGame(isGameWon);
-        }
-        if(isGameTied) {
-            _stopGame(isGameTied);
-        }
     }
 
     const _changeGameMode = (button) => {
