@@ -2,8 +2,10 @@ const Player = (name, mark) => {
     let myTurn = false;
 
     const changeTurn = (value) => {
-        if(value) myTurn = value;  
-        else myTurn = !myTurn; 
+        if(value !== undefined) 
+            myTurn = value;  
+        else 
+            myTurn = !myTurn; 
     }
 
     const isItMyTurn = () => {
@@ -156,7 +158,9 @@ const playerAI = (() => {
         let board = gameBoard.getBoard();
         let bestMove = _minimax(board, playerTwo);
         const symbol = playerOne.isItMyTurn() ? 1 : 2;
-        game.playRound(bestMove.x, bestMove.y, symbol);
+        if(playerTwo.isItMyTurn()) {
+            game.playRound(bestMove.x, bestMove.y, symbol);
+        }
     }
 
     const _isMovesLeft = (board) => {
@@ -233,7 +237,7 @@ const playerAI = (() => {
         }
         return moves[bestMove];
     }
-    
+
     return {playRoundAI}
 })();
 
@@ -276,3 +280,5 @@ const displayController = (() => {
 
 const startButton = document.querySelector('.start-game');
 startButton.addEventListener('click', game.startGame);
+
+game.startGame();
