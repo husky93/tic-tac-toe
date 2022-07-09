@@ -75,6 +75,9 @@ main {
     transition: all 0.2s;
     border-radius: 4px;
     font-weight: 500;
+    display: flex;
+    gap: 4px;
+    align-items: center;
 }
 
 .btn--primary {
@@ -88,7 +91,12 @@ main {
     background-color: var(--primary-color-hover);
 }
 
-.btn--primary:active {
+.active, .btn--primary:active {
+    background-color: var(--primary-color-active);
+    border: none;
+}
+
+.active:hover {
     background-color: var(--primary-color-active);
     border: none;
 }
@@ -101,8 +109,18 @@ main {
     padding: 48px 0;
 }
 
+.controls {
+    display: flex;
+    gap: 16px;
+}
+
 .winner-display {
+    height: 40px;
     font-size: 24px;
     font-weight: 300;
     text-shadow: 0px 0px 3px rgba(133, 175, 236, 1);
+}
+
+.icon {
+    font-size:19px;
 }

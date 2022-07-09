@@ -51,11 +51,19 @@ const gameBoard = (() => {
 const game = (() => {
     const _tiles = document.querySelectorAll(`.tile`);
     const _winnerDisplay = document.querySelector('.winner-display');
+    const _pvaButton = document.querySelector('.pva');
+    const _pvpButton = document.querySelector('.pvp');
     let _gameStopped = true;
+    let _PvP = false;
+
+    _pvaButton.addEventListener('click', () => _changeGameMode(_pvaButton));
+    _pvpButton.addEventListener('click', () => _changeGameMode(_pvpButton));
 
     const startGame = () => {
         gameBoard.initialize();
         _gameStopped = false;
+        _pvpButton.classList.contains('active') ? _PvP = true : _PvP = false;
+        console.log(_PvP);
         displayController.renderBoard();
         playerOne.changeTurn(true);
         playerTwo.changeTurn(false);
@@ -76,7 +84,7 @@ const game = (() => {
         const yIndex = e.target.parentElement.dataset.index;
         const symbol = playerOne.isItMyTurn() ? 1 : 2;
         playRound(xIndex, yIndex, symbol);
-        if (!_gameStopped) playerAI.playRoundAI();
+        if (!_gameStopped && !_PvP) playerAI.playRoundAI();
         
     }
 
@@ -147,7 +155,16 @@ const game = (() => {
         if(isGameTied) {
             _stopGame(isGameTied);
         }
+    }
 
+    const _changeGameMode = (button) => {
+        if(button.classList.contains('active')) {
+            return 0;
+        } else {
+            _pvpButton.classList.toggle('active');
+            _pvaButton.classList.toggle('active');
+            game.startGame();
+        }
     }
 
     return {startGame, playRound, checkForWinner};
@@ -278,7 +295,7 @@ const displayController = (() => {
     return {renderBoard, changeText};
 })();
 
-const startButton = document.querySelector('.start-game');
-startButton.addEventListener('click', game.startGame);
+const restartButton = document.querySelector('.start-game');
+restartButton.addEventListener('click', game.startGame);
 
 game.startGame();
