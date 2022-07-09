@@ -18,7 +18,6 @@ const playerTwo = Player('Player 2', 'X');
 
 const gameBoard = (() => {
     let _board = [];
-    let boardDOM = [];
 
     const changeMark = (x,y,symbol) => {
         _board[y][x] = symbol
@@ -34,15 +33,17 @@ const gameBoard = (() => {
         return _board;
     }
 
-    const _getBoardDOM = (() => {
+    const getBoardDOM = () => {
+        let boardDOM = [];
         const rows = [...document.querySelectorAll('.game-board .row')];
         for(let i = 0; i < rows.length; i++) {
             const tiles = document.querySelectorAll(`.game-board .row[data-index="${i}"] .tile`);
             boardDOM.push([...tiles]);
         } 
-    })();
+        return boardDOM;
+    }
 
-    return {boardDOM, changeMark, initialize, getBoard};
+    return {changeMark, initialize, getBoard, getBoardDOM};
 })();
 
 const game = (() => {
@@ -240,10 +241,11 @@ const playerAI = (() => {
 const displayController = (() => {
 
     const renderBoard = () => {
-        for(i = 0; i < gameBoard.boardDOM.length; i++) {
-            const row = gameBoard.boardDOM[i];
+        const boardDOM = gameBoard.getBoardDOM();
+        for(i = 0; i < boardDOM.length; i++) {
+            const row = boardDOM[i];
             for(j = 0; j < row.length; j++) {
-                const tile = gameBoard.boardDOM[i][j];
+                const tile = boardDOM[i][j];
                 _renderTile(tile, i, j)
             }
         }
